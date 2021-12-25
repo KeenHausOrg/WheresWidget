@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WW.EventHanlder", "WW.EventHanlder\WW.EventHanlder.csproj", "{8C45CA47-F13E-4204-BA50-9086E2CA125D}"
-EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "EventSendTester", "EventSendTester\EventSendTester.pyproj", "{C13431A3-A532-41E4-B4B2-0719594ED43D}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "WWEventServer", "WWEventServer\WWEventServer.njsproj", "{D3FF3751-C1AC-4738-80A9-C48C46DA1A8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WW.ClientApp", "WW.ClientApp\WW.ClientApp.csproj", "{0236975C-0C75-4A52-89FC-4F85C4B12289}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,12 +15,16 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8C45CA47-F13E-4204-BA50-9086E2CA125D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C45CA47-F13E-4204-BA50-9086E2CA125D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C45CA47-F13E-4204-BA50-9086E2CA125D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C45CA47-F13E-4204-BA50-9086E2CA125D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C13431A3-A532-41E4-B4B2-0719594ED43D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C13431A3-A532-41E4-B4B2-0719594ED43D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3FF3751-C1AC-4738-80A9-C48C46DA1A8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3FF3751-C1AC-4738-80A9-C48C46DA1A8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3FF3751-C1AC-4738-80A9-C48C46DA1A8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3FF3751-C1AC-4738-80A9-C48C46DA1A8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0236975C-0C75-4A52-89FC-4F85C4B12289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0236975C-0C75-4A52-89FC-4F85C4B12289}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0236975C-0C75-4A52-89FC-4F85C4B12289}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0236975C-0C75-4A52-89FC-4F85C4B12289}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

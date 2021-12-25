@@ -1,0 +1,16 @@
+{
+  "name": "wwevent-server",
+  "version": "0.0.0",
+  "description": "WWEventServer",
+  "main": "server.js",
+  "author": {
+    "name": ""
+  },
+  "dependencies": {
+    "@azure/eventhubs-checkpointstore-blob": "^1.0.1",
+    "@azure/storage-blob": "^12.8.0",
+    "body-parser": "^1.19.1",
+    "express": "^4.17.2",
+    "helmet": "^4.6.0"
+  }
+}
