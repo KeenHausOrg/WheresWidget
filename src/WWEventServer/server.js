@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const { EventHubConsumerClient } = require("@azure/event-hubs");
 const { ContainerClient } = require("@azure/storage-blob");
 const { BlobCheckpointStore } = require("@azure/eventhubs-checkpointstore-blob");
+const { Console } = require('console');
 
 const connectionString = "Endpoint=sb://widgetevents.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=uccw4FWj/RSlhHzDhv8vV9/C3NZZP1dUjlnTySJC0to=";
 const eventHubName = "widgeteventhub";
@@ -75,7 +76,7 @@ async function main() {
             for (const event of events) {
                 console.log(`Received event: '${event.body}' from partition: '${context.partitionId}' and consumer group: '${context.consumerGroup}'`);
                 // parse into wereabouts
-                widgetsWereabouts.timeStamp = event.body
+                widgetsWereabouts.timeStamp = `${event.body}`
             }
             // Update the checkpoint.
             await context.updateCheckpoint(events[events.length - 1]);
@@ -88,13 +89,13 @@ async function main() {
     );
 
     // After 30 seconds, stop processing.
-    await new Promise((resolve) => {
-        setTimeout(async () => {
-            await subscription.close();
-            await consumerClient.close();
-            resolve();
-        }, 30000);
-    });
+    //await new Promise((resolve) => {
+    //    setTimeout(async () => {
+    //        await subscription.close();
+    //        await consumerClient.close();
+    //        resolve();
+    //    }, 30000);
+    //});
 }
 
 
@@ -102,4 +103,6 @@ main().catch((err) => {
     console.log("Error occurred: ", err);
 });
 
+
 module.exports = server;
+console.log('End of startup')
