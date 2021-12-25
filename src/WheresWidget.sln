@@ -9,6 +9,11 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "WWEventServer", "WWEventSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WW.ClientApp", "WW.ClientApp\WW.ClientApp.csproj", "{0236975C-0C75-4A52-89FC-4F85C4B12289}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PyCam", "PyCam", "{E27C3C6C-0334-4013-88BD-CE8456E5FCC5}"
+	ProjectSection(SolutionItems) = preProject
+		PyCam\TFLite_detection_webcam2.py = PyCam\TFLite_detection_webcam2.py
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -15,6 +15,9 @@ const consumerGroup = "$Default"; // name of the default consumer group
 const storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=keenhaussa;AccountKey=aotT2qKnp4NZ0Tm0iTSEPzLlHwGKtlRVZaRD3Zg45GJKpMTT1s1+jmgV1o8gLQ3z1tEOgFNGE+eDdAdN8EN5yw==;EndpointSuffix=core.windows.net";
 const containerName = "wwblobcontainer";
 
+var widgetsWereabouts = { timeStamp: null };
+
+
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -44,8 +47,9 @@ server.listen(port, (err) => {
 });
 
 app.get('/', (err, res) => {
-	res.status(200);
-	res.json({ working: true });
+    res.status(200);
+    let wereaboutsJson = JSON.stringify(widgetsWereabouts);
+    res.json(wereaboutsJson);
 	res.end();
 });
 
@@ -70,6 +74,8 @@ async function main() {
 
             for (const event of events) {
                 console.log(`Received event: '${event.body}' from partition: '${context.partitionId}' and consumer group: '${context.consumerGroup}'`);
+                // parse into wereabouts
+                widgetsWereabouts.timeStamp = event.body
             }
             // Update the checkpoint.
             await context.updateCheckpoint(events[events.length - 1]);
