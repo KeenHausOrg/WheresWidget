@@ -76,23 +76,7 @@ class VideoStream:
 	# Indicate that the camera and thread should be stopped
         self.stopped = True
 
-async def sendEvent():
-    # azure event hub producer
-    producer = EventHubProducerClient.from_connection_string(conn_str="Endpoint=sb://widgetevents.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=uccw4FWj/RSlhHzDhv8vV9/C3NZZP1dUjlnTySJC0to=", eventhub_name="widgeteventhub")
-    print('About to Async')
-    async with producer:
-        # Create a batch.
-        event_data_batch = await producer.create_batch()
 
-        # Add events to the batch.
-        ts = time.time()
-        msg = f'{ts}'
-        event_data_batch.add(EventData(msg))
-        print(msg)
-
-        # Send the batch of events to the event hub.
-        await producer.send_batch(event_data_batch)
-        print('Finished sending event.')
 
 # Define and parse input arguments
 parser = argparse.ArgumentParser()
@@ -121,6 +105,32 @@ imW, imH = int(resW), int(resH)
 use_TPU = args.edgetpu
 hide_frame = args.hideframe
 
+last_event_ts = time.time()
+
+
+# method that sends the event to event hub
+async def sendEvent():
+    # azure event hub producer
+    producer = EventHubProducerClient.from_connection_string(conn_str="Endpoint=sb://widgetevents.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=uccw4FWj/RSlhHzDhv8vV9/C3NZZP1dUjlnTySJC0to=", eventhub_name="widgeteventhub")
+    print('About to Async')
+    async with producer:
+        # Create a batch.
+        event_data_batch = await producer.create_batch()
+
+        # Only send one update at most every 30 second.
+        ts = time.time() - last_event_ts
+        if ts >= 30 :
+            msg = f'{ts}'
+            # Add events to the batch.
+            event_data_batch.add(EventData(msg))
+            print(msg)
+
+            # Send the batch of events to the event hub.
+            await producer.send_batch(event_data_batch)
+            last_event_ts = time.time()
+            print('Finished sending event.')
+        else:
+            print(f'Skipping. Time between events: {ts}')
 
 # Import TensorFlow libraries
 # If tflite_runtime is installed, import interpreter from tflite_runtime, else import from regular tensorflow
@@ -233,6 +243,9 @@ while True:
             ymax = int(min(imH,(boxes[i][2] * imH)))
             xmax = int(min(imW,(boxes[i][3] * imW)))
             
+            xcenter = xmin + (int(round((xmax - xmin) / 2)))
+            ycenter = ymin + (int(round((ymax - ymin) / 2)))
+            
             if not hide_frame:
                 cv2.rectangle(frame, (xmin,ymin), (xmax,ymax), (10, 255, 0), 2)
             
@@ -245,8 +258,7 @@ while True:
                 cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
 
                 # Draw circle in center
-                xcenter = xmin + (int(round((xmax - xmin) / 2)))
-                ycenter = ymin + (int(round((ymax - ymin) / 2)))
+                
                 cv2.circle(frame, (xcenter, ycenter), 5, (0,0,255), thickness=-1)
 
             #send event hub event
