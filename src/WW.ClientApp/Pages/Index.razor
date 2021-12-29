@@ -1,9 +1,59 @@
 ﻿@page "/"
+@implements IDisposable
+@inject IHttpClientFactory ClientFactory
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Where is Widget?</PageTitle>
+<MudText Typo="Typo.h2">Where is Widget?</MudText>
+<MudText Typo="Typo.body1">This website was made as a way to track Widget the cat around the house.</MudText>
 
-<h1>Hello, world!</h1>
+<MudGrid>
+    <MudItem md="12">This is what I know about Widget's wereabouts ...</MudItem>
+    <MudItem md="6">
+        <MudCard Outlined="true">
+            <MudCardContent>
+                <MudText><strong>Last Known Pi Cam Location:</strong> @_piCamMessage</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
 
-Welcome to your new app.
+<MudDivider></MudDivider>
+<MudText Typo="Typo.h5">Details</MudText>
+<MudText Typo="Typo.body2">This iteration uses a webcam aimed at Widget's most common sleeping place around the house, the corner by the windows.</MudText>
+<MudText Typo="Typo.body2">I am currently using a Pi Zero 2 with webcam, and doing object detection using TensorFlowLite. If you want to know more here is my tutorial</MudText>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code{
+    private string _piCamMessage = "I don't know where Widget is.";
+    private Timer? _timer;
+
+    protected override void OnInitialized()
+    {
+        var startTimeSpan = TimeSpan.Zero;
+        var periodTimeSpan = TimeSpan.FromMinutes(1);
+        _timer = new Timer(async (e)=>
+        {
+            await GetPiCamStatus();
+        }, null, startTimeSpan, periodTimeSpan);
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+    private async Task GetPiCamStatus()
+    {
+        Console.WriteLine("Requesting location...");
+        var request = new HttpRequestMessage(HttpMethod.Get,
+            "http://localhost:3000");
+
+        var client = ClientFactory.CreateClient();
+        var response = await client.SendAsync(request);
+        var msg = await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"Msg received: {msg}");
+        if(msg != null)
+        {
+            _piCamMessage = msg;
+        }
+    }
+}

@@ -37,6 +37,7 @@ from azure.eventhub import EventData
 # Source - Adrian Rosebrock, PyImageSearch: https://www.pyimagesearch.com/2015/12/28/increasing-raspberry-pi-fps-with-python-and-opencv/
 class VideoStream:
     """Camera object that controls video streaming from the Picamera"""
+    # def __init__(self,resolution=(640,480),framerate=30):
     def __init__(self,resolution=(640,480),framerate=30):
         # Initialize the PiCamera and the camera image stream
         self.stream = cv2.VideoCapture(0)
@@ -85,7 +86,7 @@ async def sendEvent():
 
         # Add events to the batch.
         ts = time.time()
-        msg = f'First event at:{ts}'
+        msg = f'{ts}'
         event_data_batch.add(EventData(msg))
         print(msg)
 
@@ -224,7 +225,7 @@ while True:
     # Loop over all detections and draw detection box if confidence is above minimum threshold
     for i in range(len(scores)):
         object_name = labels[int(classes[i])] # Look up object name from "labels" array using class index
-        if ((scores[i] > min_conf_threshold) and (scores[i] <= 1.0) and (object_name=='person')):
+        if ((scores[i] > min_conf_threshold) and (scores[i] <= 1.0)):
             # Get bounding box coordinates and draw box
             # Interpreter can return coordinates that are outside of image dimensions, need to force them to be within image using max() and min()
             ymin = int(max(1,(boxes[i][0] * imH)))
@@ -249,7 +250,8 @@ while True:
                 cv2.circle(frame, (xcenter, ycenter), 5, (0,0,255), thickness=-1)
 
             #send event hub event
-            asyncio.run(sendEvent())
+            if (object_name=='cat' or object_name=='dog' or object_name=='elephant'):
+                asyncio.run(sendEvent())
             
             # Print info
             print('Object ' + str(i) + ': ' + object_name + ' at (' + str(xcenter) + ', ' + str(ycenter) + ')')
