@@ -5,40 +5,44 @@
 <PageTitle>Where is Widget?</PageTitle>
 <MudText Typo="Typo.h2">Where is Widget?</MudText>
 <MudText Typo="Typo.body1">This website was made as a way to track Widget the cat around the house.</MudText>
-
-<MudGrid>
-    <MudItem md="12">This is what I know about Widget's wereabouts ...</MudItem>
-    <MudItem md="6">
-        <MudCard Outlined="true">
-            <MudCardContent>
-                <MudText><strong>Last Known Pi Cam Location:</strong> @_piCamMessage</MudText>
-            </MudCardContent>
-        </MudCard>
+<MudSpacer></MudSpacer>
+<MudGrid Class="mt-2 mb-3">
+    <MudItem md="12"><MudText>This is what I know about Widget's wereabouts ...</MudText></MudItem>
+    <MudItem md="12" Class=" d-flex justify-center mt-2">
+        <MudText><strong>Last Known Pi Cam Location:</strong> @_piCamMessage</MudText>
     </MudItem>
 </MudGrid>
 
 <MudDivider></MudDivider>
 <MudText Typo="Typo.h5">Details</MudText>
-<MudText Typo="Typo.body2">This iteration uses a webcam aimed at Widget's most common sleeping place around the house, the corner by the windows.</MudText>
-<MudText Typo="Typo.body2">I am currently using a Pi Zero 2 with webcam, and doing object detection using TensorFlowLite. If you want to know more here is my tutorial</MudText>
+<MudText Typo="Typo.body2" Class="mt-1">This iteration uses a webcam aimed at Widget's most common sleeping place around the house, the corner by the windows.</MudText>
+<MudText Typo="Typo.body2">I am currently using a Pi Zero 2 with webcam, and doing object detection using TensorFlowLite. If you want to know more here is my tutorial.</MudText>
 
 @code{
     private string _piCamMessage = "I don't know where Widget is.";
-    private Timer? _timer;
+    private Timer? _apiTimer;
+    private Timer? _resetTimer;
 
     protected override void OnInitialized()
     {
         var startTimeSpan = TimeSpan.Zero;
         var periodTimeSpan = TimeSpan.FromMinutes(1);
-        _timer = new Timer(async (e)=>
+        _apiTimer = new Timer(async (e)=>
         {
             await GetPiCamStatus();
         }, null, startTimeSpan, periodTimeSpan);
+
+        _resetTimer = new Timer((e) =>
+        {
+            _piCamMessage = "It has been over an hour since last I saw Widget... =(";
+            StateHasChanged();
+        }, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
     }
 
     public void Dispose()
     {
-        _timer?.Dispose();
+        _apiTimer?.Dispose();
+        _resetTimer?.Dispose();
     }
 
     private async Task GetPiCamStatus()
@@ -50,10 +54,11 @@
         var client = ClientFactory.CreateClient();
         var response = await client.SendAsync(request);
         var msg = await response.Content.ReadAsStringAsync();
-        Console.WriteLine($"Msg received: {msg}");
         if(msg != null)
         {
+            var secondsToWait = 3600;
             _piCamMessage = msg;
+            _resetTimer?.Change(secondsToWait * 1000, secondsToWait * 1000);
         }
     }
 }
