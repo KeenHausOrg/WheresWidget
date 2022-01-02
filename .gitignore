@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 /src/WW.EventHanlder/wwwroot/lib/bootstrap/dist
 /src/WW.EventHanlder/wwwroot/lib/jquery
+/src/WW.ClientApp/wwwroot/appsettings.json

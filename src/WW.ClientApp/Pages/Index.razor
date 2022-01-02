@@ -1,6 +1,8 @@
 ﻿@page "/"
+@using Microsoft.Extensions.Configuration
 @implements IDisposable
 @inject IHttpClientFactory ClientFactory
+@inject IConfiguration Configuration
 
 <PageTitle>Where is Widget?</PageTitle>
 <MudText Typo="Typo.h2">Where is Widget?</MudText>
@@ -49,7 +51,7 @@
     {
         Console.WriteLine("Requesting location...");
         var request = new HttpRequestMessage(HttpMethod.Get,
-            "http://localhost:3000");
+            Configuration["EventServerAddress"]);
 
         var client = ClientFactory.CreateClient();
         var response = await client.SendAsync(request);
