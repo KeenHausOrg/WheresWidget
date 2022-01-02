@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/9631575d-e5ec-4db4-93d4-7099ddf4d897/resourceGroups/KeenHaus/providers/Microsoft.Web/sites/WWEventServer",
+  "appService.deploySubpath": "."
+}

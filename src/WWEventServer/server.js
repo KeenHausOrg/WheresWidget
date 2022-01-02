@@ -3,7 +3,7 @@ var cors = require('cors')
 const bodyParser = require('body-parser');
 const app = express();
 const server = require('http').Server(app);
-const port = 3000;
+const port = process.env.PORT || 5000;
 const helmet = require('helmet');
 
 const { EventHubConsumerClient } = require("@azure/event-hubs");
@@ -29,7 +29,7 @@ app.use((req, res, next) => {
     let allowedOrigins = ["http://localhost:8080", "https://localhost:7054"];
     let origin = req.headers.origin;
     if (allowedOrigins.includes(origin)) {
-        res.header("Access-Control-Allow-Origin", origin); // restrict it to the required domain
+        res.header("Access-Control-Allow-Origin", "*"); // restrict it to the required domain
     }
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept');
