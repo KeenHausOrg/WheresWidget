@@ -50,7 +50,7 @@ server.listen(port, (err) => {
     //main().catch((err) => {
     //    console.log("Error occurred: ", err);
     //});
-	console.log('Node Endpoints working :)');
+	console.log(`Node Endpoints on port ${port} working :)`);
 });
 
 app.get('/', (err, res) => {
@@ -80,9 +80,10 @@ async function main() {
             }
 
             for (const event of events) {
-                console.log(`Received event: '${event.body}' from partition: '${context.partitionId}' and consumer group: '${context.consumerGroup}'`);
+                console.log(`Received event: ${event.body} `);
                 // parse into wereabouts
                 widgetsWereabouts.timeStamp = `${event.body}`
+                console.log(`Setting Wereabouts to: ${JSON.stringify(widgetsWereabouts)}`);
             }
             // Update the checkpoint.
             await context.updateCheckpoint(events[events.length - 1]);

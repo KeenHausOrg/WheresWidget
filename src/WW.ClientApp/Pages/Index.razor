@@ -1,5 +1,8 @@
 ﻿@page "/"
 @using Microsoft.Extensions.Configuration
+@using Models
+@using Newtonsoft.Json
+
 @implements IDisposable
 @inject IHttpClientFactory ClientFactory
 @inject IConfiguration Configuration
@@ -58,8 +61,14 @@
         var msg = await response.Content.ReadAsStringAsync();
         if(msg != null)
         {
+            var a = JsonConvert.DeserializeObject<string>(msg) ?? string.Empty;
+            Widgetwereabouts widgetWereabouts = JsonConvert.DeserializeObject<Widgetwereabouts>(a) ?? new Widgetwereabouts();
+            Double.TryParse(widgetWereabouts.timeStamp, out var parsedSecs);
+            DateTimeOffset dateTimeOffset = (DateTimeOffset.FromUnixTimeSeconds((long)parsedSecs)).AddHours(-6);
+
             var secondsToWait = 3600;
-            _piCamMessage = msg;
+            _piCamMessage = $"Widget was last seen on the chair at {dateTimeOffset.ToString("HH:mm")} on {dateTimeOffset.ToString("dd/MM/yy")}";
+            StateHasChanged();
             _resetTimer?.Change(secondsToWait * 1000, secondsToWait * 1000);
         }
     }

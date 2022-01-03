@@ -114,13 +114,15 @@ async def sendEvent():
     producer = EventHubProducerClient.from_connection_string(conn_str="Endpoint=sb://widgetevents.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=uccw4FWj/RSlhHzDhv8vV9/C3NZZP1dUjlnTySJC0to=", eventhub_name="widgeteventhub")
     print('About to Async')
     async with producer:
+        global last_event_ts
         # Create a batch.
         event_data_batch = await producer.create_batch()
 
         # Only send one update at most every 30 second.
-        ts = time.time() - last_event_ts
+        curr_time = time.time()
+        ts = curr_time - last_event_ts
         if ts >= 30 :
-            msg = f'{ts}'
+            msg = f'{curr_time}'
             # Add events to the batch.
             event_data_batch.add(EventData(msg))
             print(msg)
@@ -233,9 +235,10 @@ while True:
     scores = interpreter.get_tensor(output_details[2]['index'])[0] # Confidence of detected objects
 
     # Loop over all detections and draw detection box if confidence is above minimum threshold
+    interestedLabels = ["cat", "elephant", "dog"]
     for i in range(len(scores)):
         object_name = labels[int(classes[i])] # Look up object name from "labels" array using class index
-        if ((scores[i] > min_conf_threshold) and (scores[i] <= 1.0)):
+        if ( (scores[i] > min_conf_threshold) and (scores[i] <= 1.0) and (object_name in interestedLabels )):
             # Get bounding box coordinates and draw box
             # Interpreter can return coordinates that are outside of image dimensions, need to force them to be within image using max() and min()
             ymin = int(max(1,(boxes[i][0] * imH)))
